@@ -1,4 +1,27 @@
 {
-	"name": "cloud-init-compile",
-	"version": "0.1.0"
+  "name": "cloud-init-compile",
+  "version": "0.1.0",
+  "description": "",
+  "bin": {
+    "clic": "./node_modules/cloud-init-compile/cli/cli.js"
+  },
+  "preferGlobal": true,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rgrannell1/cloud-init-compile"
+  },
+  "author": "Ryan Grannell <r.grannell2@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=5.0.0",
+    "npm":  ">=3.3.7"
+  },
+  "devDependencies": {
+    "eslint": "^1.9.0",
+    "babel-eslint": ">=4.1.4"
+  },
+  "dependencies": {
+    "docopt": "^0.6.2"
+  }
 }
