@@ -1,3 +1,4 @@
 {
-	"name": "cloud-init-compile"
+	"name": "cloud-init-compile",
+	"version": "0.1.0"
 }
