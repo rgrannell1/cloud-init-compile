@@ -1,12 +1,17 @@
 
-# cloud-init-compile v0.1.0
+# cloud-init-compile
 
 
+
+## Usage
+
+```bash
+
+clic -zr main-script.sh data-file.txt secondary-script.sh
+
+```
 
 ## Installation
-
-
-
 
 ## License
 
