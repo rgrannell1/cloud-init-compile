@@ -13,6 +13,10 @@ clic -zr main-script.sh data-file.txt secondary-script.sh
 
 ## Installation
 
+```bash
+npm install rgrannell1/cloud-init-compile --global
+```
+
 ## License
 
 Cloud-init-compile is released under the MIT licence.
