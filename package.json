@@ -13,15 +13,18 @@
   },
   "author": "Ryan Grannell <r.grannell2@gmail.com>",
   "license": "MIT",
+  "main": "cloud-init-compile/app/cloud-init-compile.js",
   "engines": {
     "node": ">=5.0.0",
-    "npm":  ">=3.3.7"
+    "npm": ">=3.3.7"
   },
   "devDependencies": {
+    "mocha": "*",
     "eslint": "^1.9.0",
     "babel-eslint": ">=4.1.4"
   },
   "dependencies": {
-    "docopt": "^0.6.2"
+    "docopt": "^0.6.2",
+    "mocha": "^2.4.5"
   }
 }
