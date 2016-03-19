@@ -1,14 +1,28 @@
 
 # cloud-init-compile
 
+Clic (cloud-init-compile) bundles several scripts and data files into a single cloud-init-friendly script.
 
-
-## Usage
+## Example Usage
 
 ```bash
+# installer.sh
+sudo apt-get install htop --assume-yes
+```
 
-clic -zr main-script.sh data-file.txt secondary-script.sh
+```bash
+# main.sh
 
+source ./installer.sh
+echo "done."
+```
+
+```bash
+clic -zr main.sh -- installer.sh main.sh
+```
+
+```
+H4sIAAAAAAACA3WNywrCMBBF9/MVYwrdSJofKG58QEHsRtclpoMpNEnpJKJ/76YBi7g7lwvnFBuVeFb3wSvyT2QLRkesa9yf29uhay7NtTu2J9yhGDxHPY40V2wFFPi9gVMfUE9RPijmB20ME0qpmZMj+SYGgLX3f83pwS+hBQE4pNkQVmqVJmMDij54qsSv37rQ4/aVJViWGT8HVaT++wAAAA==
 ```
 
 ## Installation
