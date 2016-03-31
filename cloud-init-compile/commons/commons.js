@@ -5,7 +5,7 @@
 
 
 
-const constants = require('cloud-init-compile/commons/constants')
+const constants = require('../commons/constants')
 
 
 

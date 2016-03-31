@@ -8,8 +8,8 @@ const fs        = require('fs')
 const path      = require('path')
 const zlib      = require('zlib')
 
-const commons   = require('cloud-init-compile/commons/commons')
-const constants = require('cloud-init-compile/commons/constants')
+const commons   = require('../commons/commons')
+const constants = require('../commons/constants')
 
 
 

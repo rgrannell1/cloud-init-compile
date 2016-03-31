@@ -4,8 +4,8 @@
 
 
 
-const constants     = require('cloud-init-compile/commons/constants')
 const path          = require('path')
+const constants     = require('../commons/constants')
 const bundleContent = require('./bundle-content')
 
 

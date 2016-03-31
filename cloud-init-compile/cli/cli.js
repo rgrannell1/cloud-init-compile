@@ -5,7 +5,7 @@
 
 
 
-const constants = require('cloud-init-compile/commons/constants')
+const constants = require('../commons/constants')
 
 const encodings = Array.from(constants.supportedEncodings)
 	.map(encoding => `--${encoding}`)
@@ -65,7 +65,7 @@ Version:
 
 
 const docopt           = require('docopt').docopt
-const cloudInitCompile = require('cloud-init-compile/app/cloud-init-compile')
+const cloudInitCompile = require('../app/cloud-init-compile')
 const args             = docopt(doc)
 
 

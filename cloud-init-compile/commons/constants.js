@@ -32,7 +32,7 @@ const constants = {
 	defaults: {
 		encoding: 'base64'
 	},
-	package: require('../../../package')
+	package: require('../../package')
 }
 
 

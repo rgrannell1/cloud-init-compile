@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "bin": {
-    "clic": "./node_modules/cloud-init-compile/cli/cli.js"
+    "clic": "./cloud-init-compile/cli/cli.js"
   },
   "preferGlobal": true,
   "scripts": {},
