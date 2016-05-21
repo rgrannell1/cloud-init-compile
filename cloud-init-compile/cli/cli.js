@@ -16,7 +16,7 @@ const encodingOptions = encodings
 
 const doc = `
 Name:
-	clic (cloud-init-compile) — compile multiple scripts into a single script.
+	clic (cloud-init-compile) — compile multiple scripts into a single cloud-init friendly script.
 
 Author:
 	${constants.package.author}

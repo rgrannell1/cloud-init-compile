@@ -2,3 +2,6 @@
 node_modules/*
 !node_modules/cloud-init-compile
 npm-debug.log
+snapcraft/*
+!snapcraft.yaml
+

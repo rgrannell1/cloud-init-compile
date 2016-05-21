@@ -1,0 +1,14 @@
+name:        clic
+version:     v0.1.0
+summary:     compile multiple scripts into a single cloud-init friendly script
+description: compile multiple scripts into a single cloud-init friendly script
+
+apps:
+  clic:
+    command: bin/clic
+
+parts:
+  clic:
+    plugin: nodejs
+    node-packages:
+      - rgrannell1/cloud-init-compile
