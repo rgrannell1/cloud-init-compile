@@ -3,6 +3,10 @@
 
 Clic (cloud-init-compile) bundles several scripts and data files into a single cloud-init-friendly script. The program's output can be embedded in VM-provioning scripts for DigitalOcean or other cloud provider.
 
+## Why?
+
+I've ran into this problem too often in work when working with VM provisioning.
+
 ## Example Usage
 
 ```bash
