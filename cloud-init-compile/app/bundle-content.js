@@ -3,7 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const zlib = require('zlib')
 
-const commons = require('../commons/commons')
 const constants = require('../commons/constants')
 
 /**
@@ -80,7 +79,11 @@ const bundleContent = async (fpaths, opts) => {
 				content: content.toString()
 			})
 		} catch (err) {
-			// -- TODO handle error
+			if (err.code === constants.errCodes.noEntry) {
+				throw errors.noEntry(`could not read from "${fpath}"; does the file exist?\n`)
+			} else if (err.code === constants.errCodes.noAccess) {
+				throw errors.noEntry(`could not read from "${fpath}", as it isn't read-accessible\n`)
+			}
 		}
 	}
 

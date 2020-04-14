@@ -12,7 +12,6 @@ const compile = {}
  * the code to generate the cloud-init script.
  *
  * @param {*} rawArgs
- * @param {*} callback
  */
 compile.cli = rawArgs => {
 	return compile.api(compile.preprocess(rawArgs))
