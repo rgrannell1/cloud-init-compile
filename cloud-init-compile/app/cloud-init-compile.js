@@ -1,76 +1,90 @@
 
-"use strict"
+const errors = require('@rgrannell/errors')
 
-
-
-
-const path          = require('path')
-const constants     = require('../commons/constants')
+const path = require('path')
+const constants = require('../commons/constants')
 const bundleContent = require('./bundle-content')
 
+const compile = {}
 
+/**
+ * The core function. Takes CLI-provided arguments and validates them, then calls
+ * the code to generate the cloud-init script.
+ *
+ * @param {*} rawArgs
+ * @param {*} callback
+ */
+compile.cli = rawArgs => {
+	return compile.api(compile.preprocess(rawArgs))
+}
 
-
-
-const compile = (rawArgs, callback) => {
-
-	const args = compile.precond(compile.preprocess(rawArgs))
+compile.api = rawArgs => {
+	const args = compile.precond(rawArgs)
 
 	if (args.version) {
-
 		console.log(constants.package.version)
-
-		callback(null)
-
 	} else {
-
-		bundleContent(args.fpaths, {
-			toRun:      args.toRun,
-			encoding:   args.encoding,
+		return bundleContent(args.fpaths, {
+			toRun: args.toRun,
+			encoding: args.encoding,
 			shouldGzip: args.shouldGzip
-		}, callback)
+		})
+	}
+}
+
+/**
+ * Check that the supplied arguments meet the required input formats.
+ *
+ * @param {Object} rawArgs semi-processed arguments
+ *
+ * @returns {Object} provided arguments
+ */
+compile.precond = rawArgs => {
+	const detectedBaseNames = new Set( )
+
+	if (!rawArgs.fpaths) {
+		throw errors.internalError('fpaths was missing from arguments supplied to fpaths. This is a program error.')
+	}
+
+	if (!Array.isArray(rawArgs.fpaths)) {
+		throw errors.internalError('fpaths was not an array of paths.')
 
 	}
 
-}
-
-compile.precond = rawArgs => {
-
-	const detectedBaseNames = new Set( )
-
+	// -- check for duplicates.
 	rawArgs.fpaths.forEach(fpath => {
-
 		const fname = path.basename(fpath)
 
 		if (detectedBaseNames.has(fname)) {
-
-			console.error(`error: file-name "${fname}" was repeated in file-path "${fpath}"`)
-			process.exit(1)
-
+			throw errors.duplicateFile(`file-name ${fname} was repeated in file-path ${fpath}`)
 		} else {
 			detectedBaseNames.add(fname)
 		}
-
 	})
 
 	const runBasename = path.basename(rawArgs.toRun)
 
+	// -- check the executable file is present.
 	if (!detectedBaseNames.has(runBasename)) {
-
-		console.error(`error: attempting to run file "${runBasename}" that will not be included in the output script.`)
-		process.exit(1)
-
+		throw errors.missingPath(`error: attempting to run file "${runBasename}" that will not be included in the output script.`)
 	}
 
 	return rawArgs
-
 }
 
+/**
+ * Parse the arguments provided by the CLI
+ *
+ * @param {Object} rawArgs
+ *
+ * @returns {Object} parsed arguments
+ */
 compile.preprocess = rawArgs => {
-
+	// -- default to base64, but allow --hex or --utf8 or another
+	// -- encoding to be specified.
 	const encoding = Object.keys(rawArgs).reduce((selected, option) => {
-
-		const value      = rawArgs[option]
+		// -- fetch the value and option name.
+		const value = rawArgs[option]
 		const optionName = option.replace(/^--/, '')
 
 		return constants.supportedEncodings.has(optionName) && value === true
@@ -80,16 +94,12 @@ compile.preprocess = rawArgs => {
 	}, constants.defaults.encoding)
 
 	return {
-		encoding:   encoding,
+		encoding,
 		shouldGzip: rawArgs['--gzip'],
-		fpaths:     rawArgs['<fpath>'],
-		toRun:      rawArgs['--run'],
-		version:    rawArgs['--version']
+		fpaths: rawArgs['<fpath>'],
+		toRun: rawArgs['--run'],
+		version: rawArgs['--version']
 	}
-
 }
-
-
-
 
 module.exports = compile

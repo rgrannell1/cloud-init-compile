@@ -1,9 +1,4 @@
 
-"use strict"
-
-
-
-
 const constants = {
 	shebangs: {
 		bash: '#!/usr/bin/env sh'
@@ -34,9 +29,5 @@ const constants = {
 	},
 	package: require('../../package')
 }
-
-
-
-
 
 module.exports = constants

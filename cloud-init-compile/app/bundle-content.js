@@ -1,103 +1,94 @@
 
-"use strict"
+const fs = require('fs')
+const path = require('path')
+const zlib = require('zlib')
 
-
-
-
-const fs        = require('fs')
-const path      = require('path')
-const zlib      = require('zlib')
-
-const commons   = require('../commons/commons')
+const commons = require('../commons/commons')
 const constants = require('../commons/constants')
 
-
-
-
-
+/**
+ * Given the files & the script to run, generate the
+ * cloud-init script.
+ *
+ * @param {*} files a list of file paths
+ * @param {*} toRun the file to run
+ *
+ * @returns {string} a cloud-init document.
+ */
 const createCloudInitScript = (files, toRun) => {
-
+	// -- generate HERE documents for each file, using a
+	// -- constant delimiter for each file.
 	const hereDocuments = files.map(content => {
-
 		const filename = path.basename(content.fpath)
 
 		return `cat << ${constants.cloudInitDelimiter} > "${filename}"` + '\n' +
-			content.content                                             + '\n' +
+			content.content + '\n' +
 			constants.cloudInitDelimiter
-
 	})
 
 	const runName = path.basename(toRun)
 
 	return [constants.shebangs.bash]
 		.concat(hereDocuments)
-		.concat(
-			`chmod +x ${runName} && ${runName}`)
+		// -- make the runneable script executable.
+		.concat(`chmod +x ${runName} && ${runName}`)
 		.join('\n')
-
 }
 
-
-
-
-
-const gzipContent = (content, encoding, callback) => {
-
-	zlib.gzip(
-		new Buffer(content, constants.encodings.utf8),
-		{
-			level: zlib.Z_BEST_COMPRESSION
-		},
-		(err, result) => {
-			callback(null, result.toString(encoding))
-		}
-	)
-
+/**
+ * gzip the cloud-init script.
+ *
+ * @param {string} content the content to zip.
+ * @param {string} encoding the string encoding to export.
+ *
+ * @returns {Promise<string>} the cloud-init script
+ */
+const gzipContent = async (content, encoding) => {
+	return new Promise((resolve, reject) => {
+		zlib.gzip(
+			new Buffer(content, constants.encodings.utf8),
+			{
+				level: zlib.Z_BEST_COMPRESSION
+			},
+			// -- encode the zipped cloud-init script.
+			(err, result) => {
+				err
+					? reject(err)
+					: resolve(result.toString(encoding))
+			}
+		)
+	})
 }
 
+/**
+ * Bundle the files and construct a cloud-init script
+ *
+ * @param {Array<string>} fpaths
+ * @param {Object} opts
+ *
+ * @returns {string} return a cloud-init script
+ */
+const bundleContent = async (fpaths, opts) => {
 
+	const results = []
 
-
-const bundleContent = (fpaths, opts, callback) => {
-
-	commons.async.map(
-		fpaths,
-		(fpath, fsCallback) => {
-
-			fs.readFile(fpath, (err, content) => {
-				fsCallback(err, {fpath, content})
+	for (const fpath of fpaths) {
+		try {
+			const content = await fs.readFile(fpath)
+			results.push({
+				fpath,
+				content: content.toString()
 			})
-
-		}, results => {
-
-			results.forEach(result => {
-
-				if (result.err) {
-					return commons.errors.fs(result.err, result.result.fpath)
-				}
-
-			})
-
-			const cloudInitScript = createCloudInitScript( results.map(result => {
-
-				return {
-					fpath:   result.result.fpath,
-					content: result.result.content.toString( )
-				}
-
-			}), opts.toRun)
-
-			opts.shouldGzip
-				? gzipContent(cloudInitScript, opts.encoding, callback)
-				: callback(null, cloudInitScript)
-
+		} catch (err) {
+			// -- TODO handle error
 		}
-	)
+	}
 
+	const cloudInitScript = createCloudInitScript(results, opts.toRun)
+
+	return opts.shouldGzip
+		? gzipContent(cloudInitScript, opts.encoding)
+		: cloudInitScript
 }
-
-
-
-
 
 module.exports = bundleContent

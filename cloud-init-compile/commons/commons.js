@@ -1,24 +1,12 @@
 
-"use strict"
-
-
-
-
-
 const constants = require('../commons/constants')
-
-
-
 
 const commons = {
 	async:  { },
 	errors: { }
 }
 
-
-
 commons.async.map = (data, fn, callback, acc) => {
-
 	if (data.length === 0) {
 		return callback(acc)
 	} else {
@@ -28,11 +16,9 @@ commons.async.map = (data, fn, callback, acc) => {
 		})
 
 	}
-
 }
 
 commons.errors.fs = (err, fpath) => {
-
 	const handled = {
 		[constants.errCodes.noEntry]:  fpath => {
 			return `ERROR: could not read from "${fpath}"; does the file exist?\n`
@@ -43,20 +29,13 @@ commons.errors.fs = (err, fpath) => {
 	}
 
 	if (err) {
-
 		const message = handled.hasOwnProperty(err.code)
 			? handled[err.code](fpath)
 			: err.message
 
 		console.error(message)
 		process.exit(1)
-
 	}
-
 }
-
-
-
-
 
 module.exports = commons

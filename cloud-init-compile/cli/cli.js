@@ -2,9 +2,6 @@
 
 "use strict"
 
-
-
-
 const constants = require('../commons/constants')
 
 const encodings = Array.from(constants.supportedEncodings)
@@ -12,7 +9,6 @@ const encodings = Array.from(constants.supportedEncodings)
 
 const encodingOptions = encodings
 	.map(encoding => `	${encoding}`)
-
 
 const doc = `
 Name:
@@ -60,18 +56,13 @@ Version:
 	v${constants.package.version}
 `
 
-
-
-
-
 const docopt           = require('docopt').docopt
 const cloudInitCompile = require('../app/cloud-init-compile')
 const args             = docopt(doc)
 
-
-
-
-
-cloudInitCompile(args, (err, content) => {
+const main = async () => {
+	const content = await cloudInitCompile.cli(args)
 	console.log(content)
-})
+}
+
+main()
