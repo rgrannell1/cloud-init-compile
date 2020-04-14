@@ -28,6 +28,7 @@ compile.api = rawArgs => {
 			encoding: args.encoding,
 			shouldGzip: args.shouldGzip
 		})
+
 	}
 }
 
@@ -42,11 +43,11 @@ compile.precond = rawArgs => {
 	const detectedBaseNames = new Set( )
 
 	if (!rawArgs.fpaths) {
-		throw errors.internalError('fpaths was missing from arguments supplied to fpaths. This is a program error.')
+		throw errors.internalError('fpaths was missing from arguments supplied to cloud-init-compile. This is a program error.', 'internalError')
 	}
 
 	if (!Array.isArray(rawArgs.fpaths)) {
-		throw errors.internalError('fpaths was not an array of paths.')
+		throw errors.internalError('fpaths was not an array of paths.', 'internalError')
 
 	}
 
@@ -55,7 +56,7 @@ compile.precond = rawArgs => {
 		const fname = path.basename(fpath)
 
 		if (detectedBaseNames.has(fname)) {
-			throw errors.duplicateFile(`file-name ${fname} was repeated in file-path ${fpath}`)
+			throw errors.duplicateFile(`file-name ${fname} was repeated in file-path ${fpath}`, 'duplicateFile')
 		} else {
 			detectedBaseNames.add(fname)
 		}
@@ -65,7 +66,7 @@ compile.precond = rawArgs => {
 
 	// -- check the executable file is present.
 	if (!detectedBaseNames.has(runBasename)) {
-		throw errors.missingPath(`error: attempting to run file "${runBasename}" that will not be included in the output script.`)
+		throw errors.missingPath(`error: attempting to run file "${runBasename}" that will not be included in the output script.`, 'missingPath')
 	}
 
 	return rawArgs

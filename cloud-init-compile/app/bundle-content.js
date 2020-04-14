@@ -1,5 +1,5 @@
 
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
 const zlib = require('zlib')
 
@@ -68,7 +68,6 @@ const gzipContent = async (content, encoding) => {
  * @returns {string} return a cloud-init script
  */
 const bundleContent = async (fpaths, opts) => {
-
 	const results = []
 
 	for (const fpath of fpaths) {
@@ -80,9 +79,11 @@ const bundleContent = async (fpaths, opts) => {
 			})
 		} catch (err) {
 			if (err.code === constants.errCodes.noEntry) {
-				throw errors.noEntry(`could not read from "${fpath}"; does the file exist?\n`)
+				throw errors.noEntry(`could not read from "${fpath}"; does the file exist?\n`, 'noEntry')
 			} else if (err.code === constants.errCodes.noAccess) {
-				throw errors.noEntry(`could not read from "${fpath}", as it isn't read-accessible\n`)
+				throw errors.noAccess(`could not read from "${fpath}", as it isn't read-accessible\n`, 'noAccess')
+			} else {
+				throw err
 			}
 		}
 	}

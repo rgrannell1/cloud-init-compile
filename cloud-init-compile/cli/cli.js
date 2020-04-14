@@ -61,8 +61,12 @@ const cloudInitCompile = require('../app/cloud-init-compile')
 const args             = docopt(doc)
 
 const main = async () => {
-	const content = await cloudInitCompile.cli(args)
-	console.log(content)
+	try {
+		const content = await cloudInitCompile.cli(args)
+		console.log(content)
+	} catch (err) {
+		throw err
+	}
 }
 
 main()
