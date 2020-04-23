@@ -1,7 +1,7 @@
 
 # cloud-init-compile
 
-Clic (cloud-init-compile) bundles several scripts and data files into a single cloud-init-friendly script. The program's output can be embedded in VM-provioning scripts for DigitalOcean or other cloud provider.
+Clic (cloud-init-compile) bundles several scripts and data files into a single cloud-init-friendly script. The program's output can be embedded in VM-provisioning scripts for DigitalOcean or other cloud provider.
 
 ## Why?
 
@@ -41,7 +41,7 @@ Cloud-init-compile is released under the MIT licence.
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Ryan Grannell
+Copyright (c) 2020 Róisín Grannell
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,10 +60,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-## Versioning
-
-All versions post-release will be compliant with the Semantic Versioning 2.0.0 standard.
-
-http://semver.org/
-
