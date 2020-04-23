@@ -18,8 +18,8 @@ Author:
 	${constants.package.author}
 
 Usage:
-	clic (-r FPATH | --run FPATH) [--] <fpath>...
-	clic (-r FPATH | --run FPATH) (-z|--gzip) [${ encodings.join('|') }] [--] <fpath>...
+	clic (-r FPATH | --run FPATH) [--working-directory] [--] <fpath>...
+	clic (-r FPATH | --run FPATH) (-z|--gzip) [--working-directory] [${ encodings.join('|') }] [--] <fpath>...
 	clic (-h | --help | --version)
 
 Description:
@@ -36,6 +36,7 @@ Notes:
 	* The highest level of compression is used when gzip is enabled.
 
 Options:
+  --working-directory      The working directory to use. By default, ${constants.defaults.workingDirectory} is used.
 	-r FPATH, --run FPATH    The path or basename of the script to execute. This script must be
 	                         included as a path argument too (see below).
 	-z, --gzip               Gzip-compress the cloud-init script. This is helpful, as
@@ -56,9 +57,9 @@ Version:
 	v${constants.package.version}
 `
 
-const docopt           = require('docopt').docopt
+const docopt = require('docopt').docopt
 const cloudInitCompile = require('../app/cloud-init-compile')
-const args             = docopt(doc)
+const args = docopt(doc)
 
 const main = async () => {
 	try {

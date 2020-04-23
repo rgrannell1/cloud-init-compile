@@ -26,7 +26,8 @@ compile.api = rawArgs => {
 		return bundleContent(args.fpaths, {
 			toRun: args.toRun,
 			encoding: args.encoding,
-			shouldGzip: args.shouldGzip
+			shouldGzip: args.shouldGzip,
+			workingDirectory: args.workingDirectory
 		})
 
 	}
@@ -98,7 +99,8 @@ compile.preprocess = rawArgs => {
 		shouldGzip: rawArgs['--gzip'],
 		fpaths: rawArgs['<fpath>'],
 		toRun: rawArgs['--run'],
-		version: rawArgs['--version']
+		version: rawArgs['--version'],
+		workingDirectory: rawArgs['--working-directory'] || constants.defaults.workingDirectory
 	}
 }
 

@@ -25,7 +25,8 @@ const constants = {
 		'utf-16le'
 	]),
 	defaults: {
-		encoding: 'base64'
+		encoding: 'base64',
+		workingDirectory: '/'
 	},
 	package: require('../../package')
 }

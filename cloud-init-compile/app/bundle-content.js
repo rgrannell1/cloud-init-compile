@@ -14,13 +14,13 @@ const constants = require('../commons/constants')
  *
  * @returns {string} a cloud-init document.
  */
-const createCloudInitScript = (files, toRun) => {
+const createCloudInitScript = (files, toRun, workingDirectory) => {
 	// -- generate HERE documents for each file, using a
 	// -- constant delimiter for each file.
 	const hereDocuments = files.map(content => {
 		const filename = path.basename(content.fpath)
 
-		return `cat << ${constants.cloudInitDelimiter} > "${filename}"` + '\n' +
+		return `cat << ${constants.cloudInitDelimiter} > "$DIR/${filename}"` + '\n' +
 			content.content + '\n' +
 			constants.cloudInitDelimiter
 	})
@@ -28,9 +28,10 @@ const createCloudInitScript = (files, toRun) => {
 	const runName = path.basename(toRun)
 
 	return [constants.shebangs.bash]
+		.concat(`DIR=${workingDirectory}`)
 		.concat(hereDocuments)
 		// -- make the runneable script executable.
-		.concat(`chmod +x ${runName} && ${runName}`)
+		.concat(`chmod +x $DIR/${runName} && $DIR/${runName}\n`)
 		.join('\n')
 }
 
@@ -88,7 +89,7 @@ const bundleContent = async (fpaths, opts) => {
 		}
 	}
 
-	const cloudInitScript = createCloudInitScript(results, opts.toRun)
+	const cloudInitScript = createCloudInitScript(results, opts.toRun, opts.workingDirectory)
 
 	return opts.shouldGzip
 		? gzipContent(cloudInitScript, opts.encoding)
