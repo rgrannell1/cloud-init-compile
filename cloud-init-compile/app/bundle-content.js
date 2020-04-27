@@ -2,6 +2,7 @@
 const fs = require('fs').promises
 const path = require('path')
 const zlib = require('zlib')
+const btoa = require('btoa')
 
 const constants = require('../commons/constants')
 
@@ -20,9 +21,10 @@ const createCloudInitScript = (files, toRun, workingDirectory) => {
 	const hereDocuments = files.map(content => {
 		const filename = path.basename(content.fpath)
 
-		return `cat << ${constants.cloudInitDelimiter} > "$DIR/${filename}"` + '\n' +
-			content.content + '\n' +
-			constants.cloudInitDelimiter
+		return `cat << ${constants.cloudInitDelimiter} > "$DIR/${filename}.base64"` + '\n' +
+			btoa(content.content) + '\n' +
+			constants.cloudInitDelimiter + '\n' +
+			`base64 -d $DIR/${filename}.base64 > $DIR/${filename}`
 	})
 
 	const runName = path.basename(toRun)
