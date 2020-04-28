@@ -5,9 +5,19 @@ Clic (cloud-init-compile) bundles several scripts and data files into a single c
 
 ## Why?
 
-I've ran into this problem too often in work when working with VM provisioning.
+I've ran into this problem too often in work when working with VM provisioning. In particular, I wanted to send and run multiple files & scripts without resorting to a complex build-tool like Ansible.
 
-## Example Usage
+## Usage
+
+For both examples, I'll use the following local file layout:
+
+```
+./
+  installer.sh
+  main.sh
+```
+
+With the files:
 
 ```bash
 # installer.sh
@@ -21,6 +31,8 @@ source ./installer.sh
 echo "done."
 ```
 
+### CLI Usage
+
 ```bash
 clic -zr main.sh -- installer.sh main.sh
 ```
@@ -28,6 +40,20 @@ clic -zr main.sh -- installer.sh main.sh
 ```
 H4sIAAAAAAACA3WNywrCMBBF9/MVYwrdSJofKG58QEHsRtclpoMpNEnpJKJ/76YBi7g7lwvnFBuVeFb3wSvyT2QLRkesa9yf29uhay7NtTu2J9yhGDxHPY40V2wFFPi9gVMfUE9RPijmB20ME0qpmZMj+SYGgLX3f83pwS+hBQE4pNkQVmqVJmMDij54qsSv37rQ4/aVJViWGT8HVaT++wAAAA==
 ```
+
+### API Usage
+
+```js
+const content = await clic.api({
+  gzip: true,
+  fpaths: [
+    'installer.sh',
+    'main.sh'
+  ],
+  toRun: 'main.sh'
+})
+```
+
 
 ## Installation
 
