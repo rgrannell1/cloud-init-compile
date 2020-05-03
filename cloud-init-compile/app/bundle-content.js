@@ -129,6 +129,7 @@ const newCreateScript = async (fpaths, toRun, workingDirectory) => {
 	const runName = path.basename(toRun)
 
 	return [constants.shebangs.bash]
+		.concat('set -e')
 		.concat(`DIR=${workingDirectory}`)
 		.concat(docs)
 		// -- make the runneable script executable.
