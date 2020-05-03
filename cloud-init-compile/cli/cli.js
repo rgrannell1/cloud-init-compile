@@ -66,7 +66,14 @@ const main = async () => {
 		const content = await cloudInitCompile.cli(args)
 		console.log(content)
 	} catch (err) {
-		throw err
+		if (err.message) {
+			console.error(`${err.message}`)
+			console.error(`${err.stack}`)
+			process.exit(1)
+		} else {
+			console.error(err)
+			process.exit(1)
+		}
 	}
 }
 

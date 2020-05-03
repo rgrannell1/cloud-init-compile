@@ -2,7 +2,10 @@
 const fs = require('fs').promises
 const path = require('path')
 const zlib = require('zlib')
+const tar = require('tar')
 const btoa = require('btoa')
+const randomstring = require('randomstring')
+const streamToPromise = require('stream-to-promise')
 
 const constants = require('../commons/constants')
 
@@ -18,14 +21,7 @@ const constants = require('../commons/constants')
 const createCloudInitScript = (files, toRun, workingDirectory) => {
 	// -- generate HERE documents for each file, using a
 	// -- constant delimiter for each file.
-	const hereDocuments = files.map(content => {
-		const filename = path.basename(content.fpath)
-
-		return `cat << ${constants.cloudInitDelimiter} > "$DIR/${filename}.base64"` + '\n' +
-			btoa(content.content) + '\n' +
-			constants.cloudInitDelimiter + '\n' +
-			`base64 -d $DIR/${filename}.base64 > $DIR/${filename}`
-	})
+	const hereDocuments = files.map(createHereDocument)
 
 	const runName = path.basename(toRun)
 
@@ -63,6 +59,84 @@ const gzipContent = async (content, encoding) => {
 }
 
 /**
+ * Create user-readable file errors.
+ *
+ * @param {Error} err
+ */
+const handleReadError = err => {
+	if (err.code === constants.errCodes.noEntry) {
+		throw errors.noEntry(`could not read from "${fpath}"; does the file exist?\n`, 'noEntry')
+	} else if (err.code === constants.errCodes.noAccess) {
+		throw errors.noAccess(`could not read from "${fpath}", as it isn't read-accessible\n`, 'noAccess')
+	} else {
+		throw err
+	}
+}
+
+/**
+ *
+ * @param {*} fpath
+ */
+const toHereDocument = async fpath => {
+	const stat = await fs.lstat(fpath)
+	const basename = path.basename(fpath)
+
+	if (stat.isDirectory()) {
+		return toHereDocument.folder(fpath)
+	} else if (stat.isFile()) {
+		return toHereDocument.file(fpath)
+	} else {
+		throw errors.invalidFileType(`could not add "${fpath}" to cloud-init script.`)
+	}
+}
+
+toHereDocument.file = async fpath => {
+	const basename = path.basename(fpath)
+
+	const content = await fs.readFile(fpath)
+
+	return `\ncat << ${constants.cloudInitDelimiter} > "$DIR/${basename}.base64"` + '\n' +
+		btoa(content.toString()) + '\n' +
+		constants.cloudInitDelimiter + '\n' +
+		`base64 -d $DIR/${basename}.base64 > $DIR/${basename}\n`
+}
+
+toHereDocument.folder = async fpath => {
+	const basename = path.basename(fpath)
+
+	const stream = tar.create({
+		strict: true,
+		gzip: true
+	}, [fpath])
+
+	const zipped = await streamToPromise(stream)
+	const id = randomstring.generate()
+
+	return `cat << ${constants.cloudInitDelimiter} > "$DIR/${id}_${basename}.base64"` + '\n' +
+		btoa(zipped) + '\n' +
+		constants.cloudInitDelimiter + '\n' +
+		`base64 -d $DIR/${id}_${basename}.base64 > $DIR/${id}_zip_${basename}\n\n` +
+		`tar -xzf "$DIR/${id}_zip_${basename}" -C "$DIR"\n`
+}
+
+const newCreateScript = async (fpaths, toRun, workingDirectory) => {
+	const hereDocuments = fpaths.map(fpath => {
+		return toHereDocument(fpath)
+	})
+
+	const docs = await Promise.all(hereDocuments)
+
+	const runName = path.basename(toRun)
+
+	return [constants.shebangs.bash]
+		.concat(`DIR=${workingDirectory}`)
+		.concat(docs)
+		// -- make the runneable script executable.
+		.concat(`chmod +x $DIR/${runName} && $DIR/${runName}\n`)
+		.join('\n')
+}
+
+/**
  * Bundle the files and construct a cloud-init script
  *
  * @param {Array<string>} fpaths
@@ -71,27 +145,7 @@ const gzipContent = async (content, encoding) => {
  * @returns {string} return a cloud-init script
  */
 const bundleContent = async (fpaths, opts) => {
-	const results = []
-
-	for (const fpath of fpaths) {
-		try {
-			const content = await fs.readFile(fpath)
-			results.push({
-				fpath,
-				content: content.toString()
-			})
-		} catch (err) {
-			if (err.code === constants.errCodes.noEntry) {
-				throw errors.noEntry(`could not read from "${fpath}"; does the file exist?\n`, 'noEntry')
-			} else if (err.code === constants.errCodes.noAccess) {
-				throw errors.noAccess(`could not read from "${fpath}", as it isn't read-accessible\n`, 'noAccess')
-			} else {
-				throw err
-			}
-		}
-	}
-
-	const cloudInitScript = createCloudInitScript(results, opts.toRun, opts.workingDirectory)
+	const cloudInitScript = await newCreateScript(fpaths, opts.toRun, opts.workingDirectory)
 
 	return opts.shouldGzip
 		? gzipContent(cloudInitScript, opts.encoding)
