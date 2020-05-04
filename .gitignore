@@ -1,4 +1,5 @@
-
+test/*
+test.sh
 node_modules/*
 !node_modules/cloud-init-compile
 npm-debug.log

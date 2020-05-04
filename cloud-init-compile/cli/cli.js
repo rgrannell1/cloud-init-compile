@@ -23,16 +23,9 @@ Usage:
 	clic (-h | --help | --version)
 
 Description:
-
-	clic bundles multiple scripts into a single Bash script that can be executed by Cloud-Init. It:
-
-	* Embeds each file into the script as a here-document.
-	* Writes each file to its filename on the target machine.
-	* Executes a single supplied filename, adding executable permissions if required.
+	cloud-init-compile — clic — extracts multiple files on a target VM and runs a single target script.
 
 Notes:
-
-	* All files are assumed to be UTF-8 encoded.
 	* The highest level of compression is used when gzip is enabled.
 
 Options:
@@ -50,8 +43,7 @@ encodingOptions.join('\n') +
 	-h, --help               Display this documentation.
 
 Arguments:
-	<fpath>...               The relative file paths to load content from. If a file fails to load, an error is shown but an
-	                         output script will be generated from the remaining files.
+	<fpath>...               Relative file and folder paths to bundle.
 
 Version:
 	v${constants.package.version}

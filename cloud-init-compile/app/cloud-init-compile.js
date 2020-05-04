@@ -65,11 +65,6 @@ compile.precond = rawArgs => {
 
 	const runBasename = path.basename(rawArgs.toRun)
 
-	// -- check the executable file is present.
-	if (!detectedBaseNames.has(runBasename)) {
-		throw errors.missingPath(`error: attempting to run file "${runBasename}" that will not be included in the output script.`, 'missingPath')
-	}
-
 	return rawArgs
 }
 
