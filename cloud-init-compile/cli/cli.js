@@ -33,8 +33,9 @@ Options:
 	-r FPATH, --run FPATH    The path or basename of the script to execute. This script must be
 	                         included as a path argument too (see below).
 	-z, --gzip               Gzip-compress the cloud-init script. This is helpful, as
-	                         Cloud-Init scripts are generally limited to 16kb.  If gzip is enabled, you may specify one of the
-	                         following encodings for the output text. By default, ${constants.defaults.encoding} is used:
+													 cloud-init scripts are generally limited to 16kb and cloud-init can decompress gzipped user-data. If gzip is
+													 enabled, you may specify one of the following encodings for the output text. By default,
+													 ${constants.defaults.encoding} is used:
 ` +
 
 encodingOptions.join('\n') +
@@ -43,7 +44,7 @@ encodingOptions.join('\n') +
 	-h, --help               Display this documentation.
 
 Arguments:
-	<fpath>...               Relative file and folder paths to bundle.
+	<fpath>...               Relative file and folder paths to bundle. These files will be extracted onto a target VM or cloud-init host.
 
 Version:
 	v${constants.package.version}

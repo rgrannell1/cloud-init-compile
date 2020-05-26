@@ -1,0 +1,21 @@
+
+name: clic
+grade: devel
+version: v0.1.0
+base: core18
+
+summary:     compile multiple scripts into a single cloud-init friendly script
+description: compile multiple scripts into a single cloud-init friendly script
+confinement: strict
+
+apps:
+  kale:
+    command: bin/clic
+
+parts:
+  kale:
+    source: .
+    plugin: nodejs
+    nodejs-version: 14.3.0
+    nodejs-package-manager: yarn
+    build-packages: ['libcurl4-openssl-dev', 'git']

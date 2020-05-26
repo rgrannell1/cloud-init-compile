@@ -19,8 +19,7 @@
     "npm": ">=3.3.7"
   },
   "devDependencies": {
-    "eslint": "^1.9.0",
-    "babel-eslint": ">=4.1.4"
+
   },
   "dependencies": {
     "@rgrannell/errors": "^9.1.0",

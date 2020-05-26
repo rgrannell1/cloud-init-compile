@@ -26,7 +26,7 @@ const constants = {
 	]),
 	defaults: {
 		encoding: 'base64',
-		workingDirectory: '/'
+		workingDirectory: '/usr'
 	},
 	package: require('../../package')
 }

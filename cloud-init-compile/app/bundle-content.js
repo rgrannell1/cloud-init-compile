@@ -126,14 +126,12 @@ const newCreateScript = async (fpaths, toRun, workingDirectory) => {
 
 	const docs = await Promise.all(hereDocuments)
 
-	const runName = path.basename(toRun)
-
 	return [constants.shebangs.bash]
 		.concat('set -e')
 		.concat(`DIR=${workingDirectory}`)
 		.concat(docs)
 		// -- make the runneable script executable.
-		.concat(`chmod +x $DIR/${runName} && $DIR/${runName}\n`)
+		.concat(`chmod +x $DIR/${toRun} && $DIR/${toRun}\n`)
 		.join('\n')
 }
 
