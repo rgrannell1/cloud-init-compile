@@ -28,7 +28,7 @@
     "mocha": "^2.4.5",
     "randomstring": "^1.1.5",
     "stream-to-promise": "^2.2.0",
-    "tar": "^6.0.2",
+    "tar": "^6.1.9",
     "temp": "^0.8.3"
   }
 }
