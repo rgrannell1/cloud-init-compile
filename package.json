@@ -25,7 +25,7 @@
     "@rgrannell/errors": "^9.1.0",
     "btoa": "^1.2.1",
     "docopt": "^0.6.2",
-    "mocha": "^2.4.5",
+    "mocha": "^10.0.0",
     "randomstring": "^1.1.5",
     "stream-to-promise": "^2.2.0",
     "tar": "^6.1.9",
